@@ -171,19 +171,23 @@ document.getElementById("porque-grid").innerHTML = CONFIG.porque.map(x => `
   </div>
 `).join("");
 
-// ---- PLANOS ----
-document.getElementById("planos-grid").innerHTML = CONFIG.planos.map(pl => `
+// ---- PLANOS (cards premium) ----
+document.getElementById("planos-grid").innerHTML = CONFIG.planos.map(pl => {
+  // mensagem de WhatsApp diferente pra cada plano
+  const msg = `Olá! Vi o plano ${pl.nome} da Frente Criativa por ${pl.preco} e gostaria de entender melhor como funciona.`;
+  const link = `https://wa.me/${CONFIG.whatsapp.numero}?text=${encodeURIComponent(msg)}`;
+  const botao = pl.botao || "Quero esse";
+  return `
   <div class="plano ${pl.destaque ? 'destaque' : ''}" data-reveal>
-    ${pl.destaque ? '<span class="tag-destaque">Mais escolhido</span>' : ''}
-    <h3>${pl.nome}</h3>
+    ${pl.selo ? `<span class="plano-selo ${pl.destaque ? 'selo-destaque' : ''}">${pl.selo}</span>` : ''}
+    <h3 class="plano-nome">${pl.nome}</h3>
+    <div class="plano-preco"><span class="plano-apartir">a partir de</span>${pl.preco}</div>
     <p class="plano-desc">${pl.descricao}</p>
-    <div class="plano-preco">${pl.preco}</div>
-    <ul>${pl.itens.map(i => `<li>${i}</li>`).join("")}</ul>
-    <a class="btn ${pl.destaque ? 'btn-primario' : 'btn-linha'}"
-       href="https://wa.me/${CONFIG.whatsapp.numero}?text=${encodeURIComponent('Oi! Quero o plano ' + pl.nome + ' 🙂')}"
-       target="_blank" rel="noopener">Quero esse</a>
-  </div>
-`).join("");
+    <ul class="plano-itens">${pl.itens.map(i => `<li>${i}</li>`).join("")}</ul>
+    <div class="plano-prazo"><span>Prazo</span> ${pl.prazo}</div>
+    <a class="plano-btn ${pl.destaque ? 'plano-btn-destaque' : ''}" href="${link}" target="_blank" rel="noopener">${botao}</a>
+  </div>`;
+}).join("");
 
 // ---- FAQ ----
 document.getElementById("faq-lista").innerHTML = CONFIG.faq.map((f, i) => `

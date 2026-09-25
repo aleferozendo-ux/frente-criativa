@@ -41,7 +41,7 @@ if (!temAnimacao || menosMovimento) {
   abrirSite();
 } else {
   sessionStorage.setItem("visitou", "1");
-  const tl = gsap.timeline({ onComplete: iniciarHero });
+  const tl = gsap.timeline();
   tl.to("#preloader .pre-linha span", {
     y: 0, duration: 0.9, ease: "power3.out", stagger: 0.12, delay: 0.2
   })
@@ -50,6 +50,9 @@ if (!temAnimacao || menosMovimento) {
   }, "+=0.5")
   .to("#preloader", { yPercent: -100, duration: 0.8, ease: "expo.inOut" }, "-=0.2")
   .to(".pre-cortina", { yPercent: 100, duration: 0.9, ease: "expo.inOut" }, "<")
+  // o hero começa a aparecer JUNTO com a cortina abrindo (transição contínua,
+  // sem parecer que carregou duas vezes)
+  .add(iniciarHero, "-=0.5")
   .set("#preloader", { display: "none" })
   .set(".pre-cortina", { display: "none" });
 }
@@ -57,7 +60,10 @@ if (!temAnimacao || menosMovimento) {
 /* ============================================================
    HERO — reveal por palavra + parallax do mouse
    ============================================================ */
+let heroJaIniciou = false; // trava: hero anima UMA vez só (evita "carregamento duplo")
 function iniciarHero() {
+  if (heroJaIniciou) return;
+  heroJaIniciou = true;
   if (!temAnimacao || menosMovimento) {
     return;
   }
